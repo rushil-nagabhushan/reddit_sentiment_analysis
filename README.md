@@ -30,15 +30,18 @@ To use this tool, you need to provide Reddit API credentials. You can do this in
 
   In your terminal, export the necessary environment variables:
 
-  `export REDDIT_CLIENT_ID=your_reddit_client_id`
-  `export REDDIT_CLIENT_SECRET=your_reddit_client_secret`
+  ```
+  export REDDIT_CLIENT_ID=your_reddit_client_id
+  export REDDIT_CLIENT_SECRET=your_reddit_client_secret
+  ```
 
 - **Option 2: Create a .env File**
 
   Alternatively, you can create a `.env` file in the root directory of this repository and add your credentials:
-
-  `REDDIT_CLIENT_ID=your_reddit_client_id`
-  `REDDIT_CLIENT_SECRET=your_reddit_client_secret`
+```
+REDDIT_CLIENT_ID=your_reddit_client_id
+REDDIT_CLIENT_SECRET=your_reddit_client_secret
+```
 
 ### 4. Install the Package
 
