@@ -1,0 +1,12 @@
+pandas
+numpy
+matplotlib
+seaborn
+praw
+transformers
+torch
+scipy
+click
+python-dotenv
+xlsxwriter
+tqdm

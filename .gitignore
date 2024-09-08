@@ -1,0 +1,15 @@
+# Virtual environment directories
+/.venv
+.venv
+*venv
+
+# Python egg info directories
+*.egg-info/
+*.egg
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Reports directory
+reports/
