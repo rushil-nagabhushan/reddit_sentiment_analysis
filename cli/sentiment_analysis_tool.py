@@ -46,7 +46,7 @@ def gather_headlines(subreddit):
 
     headlines = []
     # Fetch submissions in descending order by creation date
-    for submission in reddit.subreddit(subreddit).new(limit=None):
+    for submission in reddit.subreddit(subreddit).hot(limit=None):
         # Store both headline and URL
         headlines.append((submission.title, submission.url, submission.created_utc))
 
