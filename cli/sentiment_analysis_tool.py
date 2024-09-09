@@ -10,7 +10,6 @@ import torch
 from dotenv import load_dotenv
 from datetime import datetime
 import warnings
-from tqdm import tqdm
 
 # Set constants and configurations
 load_dotenv()
@@ -44,14 +43,20 @@ def gather_headlines(subreddit):
         client_secret=os.environ.get("REDDIT_CLIENT_SECRET"),
         user_agent="Sentiment Analyzer 1.0"
     )
-    
+
     headlines = []
-    for submission in reddit.subreddit(subreddit).hot(limit=None):
+    # Fetch submissions in descending order by creation date
+    for submission in reddit.subreddit(subreddit).new(limit=None):
         # Store both headline and URL
-        headlines.append((submission.title, submission.url))
+        headlines.append((submission.title, submission.url, submission.created_utc))
+
+    # Sort headlines by creation time in descending order
+    headlines.sort(key=lambda x: x[2], reverse=True)
     
     print(f"Gathered {len(headlines)} headlines from r/{subreddit}...")
-    return headlines
+    # Return only the title and URL for further processing
+    return [(title, url) for title, url, _ in headlines]
+
 
 
 # Helper function to run the sentiment analysis pipeline
@@ -100,13 +105,10 @@ def write_report_csv(df, subreddit):
     if not os.path.exists('reports'):
         os.makedirs('reports')
 
-    # Sort DataFrame by score in descending order
-    df_sorted = df.sort_values(by='score', ascending=False)
-
     # Write to CSV file
     current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     report_path = os.path.join('reports', f'{subreddit}_sentiment_report_{current_time}.csv')
-    df_sorted.to_csv(report_path, index=False, columns=['headline', 'sentiment', 'score', 'url'])
+    df.to_csv(report_path, index=False, columns=['headline', 'sentiment', 'score', 'url'])
     print(f"Report generated at {report_path}")
 
 # Helper function to write the report
@@ -116,9 +118,6 @@ def write_report_xlsx(df, subreddit):
     if not os.path.exists('reports'):
         os.makedirs('reports')
 
-    # Sort DataFrame by score in descending order
-    df_sorted = df.sort_values(by='score', ascending=False)
-
     # Write to CSV file
     current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     report_path = os.path.join('reports', f'{subreddit}_sentiment_report_{current_time}.xlsx')
@@ -126,7 +125,7 @@ def write_report_xlsx(df, subreddit):
     # Create a Pandas Excel writer using XlsxWriter as the engine
     with pd.ExcelWriter(report_path, engine='xlsxwriter') as writer:
         # Convert the DataFrame to an Excel object
-        df_sorted.to_excel(writer, index=False, columns=['headline', 'sentiment', 'score', 'url'], sheet_name='Sentiment Analysis')
+        df.to_excel(writer, index=False, columns=['headline', 'sentiment', 'score', 'url'], sheet_name='Sentiment Analysis')
 
     print(f"Report generated at {report_path}")
 
